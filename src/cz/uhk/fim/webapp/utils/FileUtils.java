@@ -15,6 +15,8 @@ public class FileUtils {
         Path path = Paths.get(filepath);
         Files.write(path,data);
     }
+
+
     /*
     TODO: pridat Listenery na tlacitka LOAD a SAVE
     TODO: Napsat metodu validateInput() - je to boolean
