@@ -2,15 +2,12 @@ package cz.uhk.fim.webapp.gui;
 
 import cz.uhk.fim.webapp.model.RSSItem;
 import cz.uhk.fim.webapp.model.RSSList;
-import cz.uhk.fim.webapp.utils.FileUtils;
 import cz.uhk.fim.webapp.utils.RSSParser;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 
 
@@ -56,54 +53,62 @@ public class MainFrame extends JFrame{
 
        add(controlPanel, BorderLayout.NORTH);
 
-       JTextArea txtContent = new JTextArea();
-       add(new JScrollPane(txtContent),BorderLayout.CENTER);
+       JPanel contentPanel = new JPanel(new WrapLayout());
+       add(new JScrollPane(contentPanel),BorderLayout.CENTER);
 
+        try {
+            rssList = new RSSParser().getparseRSS("sc-47.xml");
+            for (RSSItem item: rssList.getAllItems()){
+                contentPanel.add(new CardView(item));
+            }
+        } catch (IOException | SAXException | ParserConfigurationException e) {
+            e.printStackTrace();
+        }
 
-       btnLoad.addActionListener(new ActionListener() {
-           @Override
-           public void actionPerformed(ActionEvent e) {
-               if (validateInput()){
-                  try{
-                      txtContent.setText(FileUtils.loadStringFromFile(txtInputField.getText()));
-                  }catch (IOException e1){
-                      showErrorMessage(IO_LOAD_TYPE);
-                      e1.printStackTrace();
-                  }
-               }
-           }
-       });
-
-       btnSave.addActionListener(new ActionListener() {
-           @Override
-           public void actionPerformed(ActionEvent e) {
-               if (validateInput()){
+//       btnLoad.addActionListener(new ActionListener() {
+//           @Override
+//           public void actionPerformed(ActionEvent e) {
+//               if (validateInput()){
+//                  try{
+//                      txtContent.setText(FileUtils.loadStringFromFile(txtInputField.getText()));
+//                  }catch (IOException e1){
+//                      showErrorMessage(IO_LOAD_TYPE);
+//                      e1.printStackTrace();
+//                  }
+//               }
+//           }
+//       });
+//
+//       btnSave.addActionListener(new ActionListener() {
+//           @Override
+//           public void actionPerformed(ActionEvent e) {
+//               if (validateInput()){
 //                   try {
 //                       FileUtils.saveStringToFile(txtInputField.getText(), txtContent.getText().getBytes("UTF-8"));
 //                   } catch (IOException e1) {
 //                       showErrorMessage(IO_SAVE_TYPE);
 //                       e1.printStackTrace();
 //                   }
-                   try {
-                       rssList = new RSSParser().getparseRSS(txtInputField.getText());
-                       txtContent.setText("");
-                       for (RSSItem item: rssList.getAllItems()){
-                           txtContent.append(String.format("%s - autor: %s%n", item.getTitle(),item.getAutor()));
-                       }
-                   } catch (IOException | SAXException |ParserConfigurationException e1) {
-                       e1.printStackTrace();
-                   }
-
-               }
-           }
-       });
-
-
-       try {
-            txtContent.setText(FileUtils.loadStringFromFile("rss.xml"));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+//                   try {
+//                       rssList = new RSSParser().getparseRSS(txtInputField.getText());
+//                       txtContent.setText("");
+//                       for (RSSItem item: rssList.getAllItems()){
+//                           txtContent.append(String.format("%s - autor: %s%n", item.getTitle(),item.getAutor()));
+//                       }
+//                   } catch (IOException | SAXException |ParserConfigurationException e1) {
+//                       e1.printStackTrace();
+//                   }
+//
+//               }
+//           }
+//       });
+//
+//
+//       try {
+//            txtContent.setText(FileUtils.loadStringFromFile("rss.xml"));
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//        }
     }
 
     private boolean validateInput(){
