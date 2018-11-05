@@ -22,6 +22,7 @@ public class CardView extends JPanel {
       setBackground(Color.RED);
       setDescription(item.getDescription());
       setInfo(String.format("%s - %s", item.getPubDate(), item.getAutor()));
+      setBackground(new Color(item.getTitle().hashCode()));
     }
 
     public void setTitle(String title){
@@ -48,7 +49,4 @@ public class CardView extends JPanel {
         lblInfo.setForeground(Color.LIGHT_GRAY);
         add(lblInfo);
     }
-
-    //TODO: udelat kazdemu bloku jinou barvu, ale pokud se zavre a znovu otevre tak ta barva bude stejna jako puvodne (třídy Color + String)
-    //TODO: omezit délku popisku na 50-100 znaků + zakončení 3 tečky(...) jakože to pokračuje
 }

@@ -8,6 +8,8 @@ import org.xml.sax.SAXException;
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 
@@ -20,6 +22,7 @@ public class MainFrame extends JFrame{
     private JTable table;
     private JLabel lblErrorMessage;
     private JTextField txtInputField;
+    private JPanel contentPane;
 
     private RSSList rssList;
 
@@ -55,11 +58,33 @@ public class MainFrame extends JFrame{
 
        JPanel contentPanel = new JPanel(new WrapLayout());
        add(new JScrollPane(contentPanel),BorderLayout.CENTER);
-
-        try {
+       try {
             rssList = new RSSParser().getparseRSS("sc-47.xml");
+
             for (RSSItem item: rssList.getAllItems()){
-                contentPanel.add(new CardView(item));
+
+
+                CardView cardView = new CardView(item);
+                cardView.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            if(e.getButton() == MouseEvent.BUTTON1) {
+                                if(e.getClickCount()==2) {
+                                    DetailFrame dF = new DetailFrame(item,color);
+                                    dF.addMouseListener(new MouseAdapter() {
+                                        @Override
+                                        public void mouseClicked(MouseEvent e) {
+                                            if(e.getButton() == MouseEvent.BUTTON3) {
+                                                dF.dispose();
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    });
+
+                contentPanel.add(cardView);
             }
         } catch (IOException | SAXException | ParserConfigurationException e) {
             e.printStackTrace();
@@ -139,5 +164,7 @@ public class MainFrame extends JFrame{
         lblErrorMessage.setText(message);
         lblErrorMessage.setVisible(true);
     }
+
+
 
 }
